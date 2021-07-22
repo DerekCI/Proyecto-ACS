@@ -90,7 +90,7 @@ void main(int argc, char *argv[]){
 
 
     // Lee el mensaje del usuario
-    printf("Enter a message: ");
+    printf("Enter a command: ");
     fgets(msg, MAXDATASIZE-1, stdin);
 
     

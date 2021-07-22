@@ -213,16 +213,18 @@ int main(int argc, char *argv[ ]){
                 // Si se recibe el mensaje sin problema, muestra el mensaje del cliente
                 printf("Server-recv() is OK...\n");
                 buf[numbytes] = '\0';
-                printf("Server-Received: %s", buf);                
+                printf("Server-Received: %s", buf);
+                
+                               
             }
 
 
-            // Envía un mensaje en un socket
+            /*// Envía un mensaje en un socket
             if(send(new_fd, "This is a test string from server!\n", 37, 0) == -1) {
 
                 // Si ocurre un error local, lo reporta y el programa continua
                 perror("Server-send() error lol!");
-            }
+            }*/
 
             // El proceso hijo ierra el socket de comunicación con el cliente y termina su ejecución
             close(new_fd);
