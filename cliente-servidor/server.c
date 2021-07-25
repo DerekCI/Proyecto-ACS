@@ -215,13 +215,25 @@ int main(int argc, char *argv[ ]){
                 buf[numbytes] = '\0';
                 printf("Server-Received: %s", buf);  
 
-                int i;
+                int i=0;
+                
                 char *tokens = strtok(buf, " ");
-                char *palabras;
+                char *palabras[2];
                 while(tokens != NULL ){
-                    printf("Palabra: %s \n", tokens);
+                    palabras[i++] = tokens;
                     tokens = strtok(NULL, " ");
                 }
+                strcat(palabras[1],".txt");
+                printf("%s", palabras[1]);
+                //trata de abrir el archivo con el numero de cuenta
+                FILE *archivo;
+                archivo = fopen(palabras[1], "r");
+                if (archivo == NULL) printf("Error al abrir el fichero");
+
+
+
+                
+
                 /*palabras = strcat(palabras,".txt");
                 printf("%s", palabras);
                 FILE *fp;
