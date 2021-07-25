@@ -213,7 +213,22 @@ int main(int argc, char *argv[ ]){
                 // Si se recibe el mensaje sin problema, muestra el mensaje del cliente
                 printf("Server-recv() is OK...\n");
                 buf[numbytes] = '\0';
-                printf("Server-Received: %s", buf);                
+                printf("Server-Received: %s", buf);  
+
+                int i;
+                char *tokens = strtok(buf, " ");
+                char *palabras;
+                while(tokens != NULL ){
+                    printf("Palabra: %s \n", tokens);
+                    tokens = strtok(NULL, " ");
+                }
+                /*palabras = strcat(palabras,".txt");
+                printf("%s", palabras);
+                FILE *fp;
+                fp = fopen( palabras, "r");
+                if (fp==NULL){fputs("File error", stderr); exit(1);}
+                fclose(fp);
+                */
             }
 
 
