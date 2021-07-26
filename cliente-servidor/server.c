@@ -10,6 +10,7 @@
 #include <arpa/inet.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include "utils.c"
 
 
 // Constante con el número de puerto por el cuál va escuchar peticiones el servidor
@@ -34,6 +35,9 @@ int main(int argc, char *argv[ ]){
     // Declaración de variables y estructuras necesarias
     int sockfd, new_fd, numbytes;
     char buf[MAXDATASIZE];
+    char * words[3];                // Para almacenar el comando dividido en 3
+    int result;                     // Para almacenar el resultado del servidor
+    char file_name[30];
 
 
     // Información de direcciones del servidor
@@ -213,9 +217,31 @@ int main(int argc, char *argv[ ]){
                 // Si se recibe el mensaje sin problema, muestra el mensaje del cliente
                 printf("Server-recv() is OK...\n");
                 buf[numbytes] = '\0';
-                printf("Server-Received: %s", buf);
-                
-                               
+
+                // Divide el mensaje en 3
+                split_string_in_three(buf, words);
+
+                strcpy(file_name, words[1]);
+                strcat(file_name, ".txt");
+
+                printf("Server-Received: %s %s %s", words[0], words[1], words[2]);
+
+                // Atiende la petición
+                result = attend_request(words, file_name);
+
+                if (result == 1) {
+                    printf("Server-insert() is OK...\n");
+                } else if (result == 2){
+                    printf("INSERT statement unsuccessful");
+                } else if (result == -1) {
+                    printf("The file was selected");
+                } else if (result == -2) {
+                    printf("File not found");
+                } else {
+                    printf("An unexpected error has occurred.");
+                }              
+
+                printf("File name: %s\n", file_name);
             }
 
 

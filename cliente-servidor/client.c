@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include "utils.c"
 
 
 // Constante con el número de puerto por el cual se va conectar el cliente
@@ -16,14 +17,13 @@
 // Constante con el número máximo de bytes que podemos envíar
 #define MAXDATASIZE 300
 
-
 void main(int argc, char *argv[]){
 
 
     // Declaración de variables y estructuras necesarias
-    int sockfd, numbytes;
-    char buf[MAXDATASIZE];
-    char msg[MAXDATASIZE];          // Mensaje del usuario
+    int sockfd, numbytes;             
+    char * words[3];                // Para almacenar el comando dividido en 3
+    char buf[MAXDATASIZE];          // Para almacenar el comando y respuesta del servidor
     struct hostent *he;             // Información del host
     struct sockaddr_in their_addr;  // Información de direcciones de conectores (puerto)
 
@@ -91,20 +91,34 @@ void main(int argc, char *argv[]){
 
     // Lee el mensaje del usuario
     printf("Enter a command: ");
-    fgets(msg, MAXDATASIZE-1, stdin);
+    fgets(buf, MAXDATASIZE-1, stdin);
 
-    
-    // Envía mensaje al servidor
-    if ((numbytes = send(sockfd, msg, MAXDATASIZE-1, 0)) == -1) {
+    // Divide el comando en 3
+    split_string_in_three(buf, words);
 
-        // Si ocurre un error, se termina el programa
-        perror("send()");
-        exit(1);
+    // Valida el comando
+    if (validate_command(words) == 1)
+    {
+        // Si es válido, envía mensaje al servidor
+        if ((numbytes = send(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+
+            // Si ocurre un error, se termina el programa
+            perror("send()");
+            exit(1);
+        } else {
+
+            // Si se envía con éxito, muestra un mensaje
+            printf("Client-send() is OK...\n");
+        }
     } else {
 
-        // Si se envía con éxito, muestra un mensaje
-        printf("Client-send() is OK...\n");
+        // Si no es válido, muestra un mensaje de error y termina el programas
+        printf("Invalid command: Please enter a valid command.\n");
+        exit(1);
     }
+    
+
+
 
 
     /* Recibe un mensaje del servidor; almacena el mensaje en el buffer (buf) y 
