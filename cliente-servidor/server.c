@@ -215,33 +215,37 @@ int main(int argc, char *argv[ ]){
                 buf[numbytes] = '\0';
                 printf("Server-Received: %s", buf);  
 
-                int i=0;
                 
-                char *tokens = strtok(buf, " ");
-                char *palabras[2];
-                while(tokens != NULL ){
-                    palabras[i++] = tokens;
-                    tokens = strtok(NULL, " ");
-                }
-                strcat(palabras[1],".txt");
-                printf("%s", palabras[1]);
-                //trata de abrir el archivo con el numero de cuenta
-                FILE *archivo;
-                archivo = fopen(palabras[1], "r");
-                if (archivo == NULL) printf("Error al abrir el fichero");
-
-
-
-                
-
-                /*palabras = strcat(palabras,".txt");
-                printf("%s", palabras);
-                FILE *fp;
-                fp = fopen( palabras, "r");
-                if (fp==NULL){fputs("File error", stderr); exit(1);}
-                fclose(fp);
-                */
             }
+            int i=0;    
+            char *tokens = strtok(buf, " ");
+            char *palabras[2];
+            char nombre_archivo[13]={};
+            while(tokens != NULL ){
+                palabras[i++] = tokens;
+                tokens = strtok(NULL, "");
+            }
+            strncat(nombre_archivo,palabras[1],9); //concatena el numero de cuenta con .txt
+            strcat(nombre_archivo,".txt");
+            printf("\nNombre del archivo: %s",nombre_archivo);
+            //trata de abrir el archivo con el numero de cuenta
+            FILE *archivo;
+            char caracter;
+            char texto[20];
+            archivo = fopen(nombre_archivo, "r");
+            if (archivo == NULL){
+                printf("\nError al abrir el fichero");
+            }else{
+                printf("\nSe abre el archivo");
+                do{
+                    caracter = fgetc(archivo);
+                    texto[i] = caracter;
+                    i++;
+                }while(caracter != EOF && caracter != '\n');
+                puts(texto);
+            }
+            
+            fclose(archivo);
 
 
             // Envía un mensaje en un socket
