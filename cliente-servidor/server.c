@@ -231,25 +231,26 @@ int main(int argc, char *argv[ ]){
             //trata de abrir el archivo con el numero de cuenta
             FILE *archivo;
             char caracter;
-            char texto[20];
+            char string1[20];
+            char string2[20];
+            char nombre[40];
             archivo = fopen(nombre_archivo, "r");
             if (archivo == NULL){
                 printf("\nError al abrir el fichero");
             }else{
                 printf("\nSe abre el archivo");
-                do{
-                    caracter = fgetc(archivo);
-                    texto[i] = caracter;
-                    i++;
-                }while(caracter != EOF && caracter != '\n');
-                puts(texto);
+                fscanf(archivo,"%s",&string1);
+                fscanf(archivo,"%s",&string2);
+                strcat(string1, " ");
+                strcat(string1, string2);
+                printf("\n%s", string1);
             }
             
             fclose(archivo);
 
 
             // Envía un mensaje en un socket
-            if(send(new_fd, "This is a test string from server!\n", 37, 0) == -1) {
+            if(send(new_fd, string1, 37, 0) == -1) {
 
                 // Si ocurre un error local, lo reporta y el programa continua
                 perror("Server-send() error lol!");

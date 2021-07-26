@@ -127,6 +127,6 @@ void main(int argc, char *argv[]){
 
     // Muestra el mensaje recibido y cierra el socket (Descriptor de archivo)
     printf("Client-Received: %s", buf);
-    printf("Client-Closing sockfd\n");
+    printf("\nClient-Closing sockfd\n");
     close(sockfd);
 }
