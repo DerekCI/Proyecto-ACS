@@ -36,6 +36,7 @@ int main(int argc, char *argv[ ]){
     int sockfd, new_fd, numbytes;
     char buf[MAXDATASIZE];
     char * words[3];                // Para almacenar el comando dividido en 3
+    char response[100];              // Almacena la respuesta del servidor
     int result;                     // Para almacenar el resultado del servidor
     char file_name[30];
 
@@ -218,39 +219,48 @@ int main(int argc, char *argv[ ]){
                 printf("Server-recv() is OK...\n");
                 buf[numbytes] = '\0';
 
-                // Divide el mensaje en 3
-                split_string_in_three(buf, words);
+                // Divide el mensaje
+                split_string(buf, words);
 
                 strcpy(file_name, words[1]);
                 strcat(file_name, ".txt");
 
-                printf("Server-Received: %s %s %s", words[0], words[1], words[2]);
+                printf("Server-Received: %s %s %s\n", words[0], words[1], words[2]);
 
                 // Atiende la petición
-                result = attend_request(words, file_name);
+                result = attend_request(words, file_name, response);
 
-                if (result == 1) {
+                if (result == 0) {
                     printf("Server-insert() is OK...\n");
-                } else if (result == 2){
-                    printf("INSERT statement unsuccessful");
-                } else if (result == -1) {
-                    printf("The file was selected");
-                } else if (result == -2) {
-                    printf("File not found");
+
+                    // Envía un mensaje en un socket
+                    if(send(new_fd, "Successful insert!", MAXDATASIZE-1, 0) == -1) {
+                        // Si ocurre un error local, lo reporta y el programa continua
+                        perror("Server-send() error lol!\n");
+                    }
+                } else if (result == 1){
+                    printf("Server-select() is OK...\n");
+
+                    // Envía un mensaje en un socket
+                    if(send(new_fd, response, MAXDATASIZE-1, 0) == -1) {
+                        // Si ocurre un error local, lo reporta y el programa continua
+                        perror("Server-send() error lol!\n");
+                    }
+                } else if (result == 2) {
+
+                    // Envía un mensaje en un socket
+                    if(send(new_fd, "Can't open file.", MAXDATASIZE-1, 0) == -1) {
+                        // Si ocurre un error local, lo reporta y el programa continua
+                        perror("Server-send() error lol!\n");
+                    }
+
+                    printf("Server-unexpected-error: Can't open file.\n");
                 } else {
-                    printf("An unexpected error has occurred.");
-                }              
+                    printf("An unexpected error has occurred.\n");
+                }
 
-                printf("File name: %s\n", file_name);
+                printf("Server-select() has responded...\n");              
             }
-
-
-            /*// Envía un mensaje en un socket
-            if(send(new_fd, "This is a test string from server!\n", 37, 0) == -1) {
-
-                // Si ocurre un error local, lo reporta y el programa continua
-                perror("Server-send() error lol!");
-            }*/
 
             // El proceso hijo ierra el socket de comunicación con el cliente y termina su ejecución
             close(new_fd);

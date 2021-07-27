@@ -93,8 +93,8 @@ void main(int argc, char *argv[]){
     printf("Enter a command: ");
     fgets(buf, MAXDATASIZE-1, stdin);
 
-    // Divide el comando en 3
-    split_string_in_three(buf, words);
+    // Divide el comando
+    split_string(buf, words);
 
     // Valida el comando
     if (validate_command(words) == 1)
@@ -112,14 +112,10 @@ void main(int argc, char *argv[]){
         }
     } else {
 
-        // Si no es válido, muestra un mensaje de error y termina el programas
+        // Si no es válido, muestra un mensaje de error y termina el programa
         printf("Invalid command: Please enter a valid command.\n");
         exit(1);
     }
-    
-
-
-
 
     /* Recibe un mensaje del servidor; almacena el mensaje en el buffer (buf) y 
     el tamaño del mensaje escrito en el buffer es retornado (numbytes) */
@@ -136,11 +132,11 @@ void main(int argc, char *argv[]){
 
 
     // Al final del mensaje recibido coloca el caracter de fin d cadena (\0)
-    buf[numbytes] = '\0';
+    //buf[numbytes] = '\0';
 
 
     // Muestra el mensaje recibido y cierra el socket (Descriptor de archivo)
-    printf("Client-Received: %s", buf);
+    printf("Client-Received: %s\n", buf);
     printf("Client-Closing sockfd\n");
     close(sockfd);
 }

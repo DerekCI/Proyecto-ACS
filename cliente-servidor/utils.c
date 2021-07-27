@@ -1,13 +1,10 @@
 #include <stdio.h>
 
-int attend_request(char * command[], char * file_name)
+int attend_request(char * command[], char * file_name, char * response)
 {
 
     FILE *file;                 // Variable apuntador al archivo
     char content[50];          // Variable para el contenido del archivo
-
-    // Forma el nombre del archivo
-    printf("before the cat file name: %s\n", file_name);
 
     // Si el comando es INSERT
     if ((strcmp(command[0], "INSERT") == 0) || (strcmp(command[0], "insert") == 0))
@@ -16,16 +13,52 @@ int attend_request(char * command[], char * file_name)
         strcpy(content, command[2]);
 
         // Crea el archivo con el número de cuenta como nombre y escribe el nombre del alumno en él
-        printf("file name: %s\n", file_name);
         file = fopen(file_name, "w");
-        fprintf(file, "%s", content);
 
-        fflush(stdout);
-        fflush(file);
+        // Si el archivo no se abrió
+        if (file == NULL)
+        {
+            return 2;
+        }
+        else
+        // Si el archivo se abre correctamente
+        {
+            fprintf(file, "%s", content);
 
-        fclose(file);
+            fflush(stdout);
+            fflush(file);
 
-        return 1;
+            fclose(file);
+
+            return 0;
+        }
+    }
+    // Si el comando es SELECT
+    else if ((strcmp(command[0], "SELECT") == 0) || (strcmp(command[0], "select") == 0))
+    {
+
+        // Abre el archivo en modo lectura
+        file = fopen(file_name, "r");
+
+        // Si el archivo no se abrió
+        if (file == NULL)
+        {
+            return 2;
+        }
+        // Si el archivo se abre correctamente
+        else 
+        {
+            // Lee el contenido y lo almacena el el arreglo command
+            fgets(response, 100, file);
+            printf("Command[2]: %s\n", response);
+            return 1;
+        }
+        
+    }
+    // Si por alguna razón no es ninguno de los dos
+    else
+    {
+        return 2;
     }
 
 }
@@ -42,7 +75,7 @@ int validate_command(char * command_pieces[])
 
 
 // Divide una cadena de caracteres en 3 piezas
-void split_string_in_three(char * inputString, char * pieces[])
+void split_string(char * inputString, char * pieces[])
 {
     int indexCtr = 0;
     int wordIndex = 0;
@@ -94,11 +127,14 @@ void split_string_in_three(char * inputString, char * pieces[])
         // Found a character of a word
         else
         {
-            // Copy the character of the word
-            words[totalWords][wordIndex] = inputString[indexCtr];
+            if (inputString[indexCtr] != '\n')
+            {
+                // Copy the character of the word
+                words[totalWords][wordIndex] = inputString[indexCtr];
 
-            // Increment the index for the word
-            wordIndex++;
+                // Increment the index for the word
+                wordIndex++;
+            }
         }
     }
 
